@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ cake.name }} — Cake House{% endblock %}
+{% block content %}
+
+<div class="card">
+    <h1 class="page-title">{{ cake.name }}</h1>
+
+    {% if cake.image %}
+        <img src="{{ cake.image.url }}" alt="{{ cake.name }}" class="cake-image">
+    {% endif %}
+
+    <p>{{ cake.description }}</p>
+
+    <div class="rating-section">
+        <h3>Average rating</h3>
+
+        {% if avg_rating %}
+            <div class="stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= avg_rating|floatformat:0 %}
+                        <span class="star filled">★</span>
+                    {% else %}
+                        <span class="star">★</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="rating-number">({{ avg_rating|floatformat:1 }} / 5)</p>
+        {% else %}
+            <p>No ratings yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <h2>Customer reviews</h2>
+
+    {% for review in reviews %}
+        <div class="review">
+            <strong>{{ review.user.username }}</strong>
+
+            <div class="stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}
+                        <span class="star filled">★</span>
+                    {% else %}
+                        <span class="star">★</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <p>{{ review.comment }}</p>
+            <small>{{ review.created_at|date:"M d, Y" }}</small>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No reviews yet. Be the first!</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

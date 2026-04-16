@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Gallery — Cake House{% endblock %}
+{% block content %}
+
+<h1 class="page-title center">Our Gallery</h1>
+
+<div class="grid grid-3">
+    {% for cake in cakes %}
+    <div class="card">
+        {% if cake.image %}
+            <img src="{{ cake.image.url }}" alt="{{ cake.name }}" class="cake-image">
+        {% endif %}
+
+        <h3>{{ cake.name }}</h3>
+        <p>{{ cake.description|truncatewords:20 }}</p>
+
+        <a href="{% url 'cakes:cake_detail' cake.id %}" class="btn">
+            View details &amp; reviews
+        </a>
+    </div>
+    {% empty %}
+        <p>No cakes available yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

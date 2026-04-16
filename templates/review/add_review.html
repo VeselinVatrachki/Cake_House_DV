@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Post a review — Cake House{% endblock %}
+{% block content %}
+
+<div class="card">
+    <h1 class="page-title">Post a review</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Submit review</button>
+    </form>
+</div>
+
+{% endblock %}
