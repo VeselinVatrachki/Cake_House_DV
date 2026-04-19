@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
-from core.forms import DeleteConfirmForm
+from accounts.forms import DeleteConfirmForm
 from review.forms import ReviewForm
 from review.models import Review
 

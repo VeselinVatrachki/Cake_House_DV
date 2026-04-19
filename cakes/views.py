@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 
 from cakes.forms import CakeForm
 from cakes.models import Cake
-from core.forms import DeleteConfirmForm
+from accounts.forms import DeleteConfirmForm
 
 
 class HomeView(TemplateView):
