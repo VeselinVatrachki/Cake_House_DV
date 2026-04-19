@@ -9,6 +9,7 @@ from django.views.generic.edit import FormMixin
 from accounts.forms import DeleteConfirmForm
 from .forms import OrderForm, OrderLineFormSet
 from .models import Order
+from accounts.tasks import process_order
 
 
 # Create your views here.
@@ -52,6 +53,9 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         formset.instance = self.object
         formset.save()
+
+        process_order.delay(self.object.id)
+
         messages.success(self.request, 'Order placed. We will confirm soon.')
         return HttpResponseRedirect(self.get_success_url())
 

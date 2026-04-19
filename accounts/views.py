@@ -2,13 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, DetailView, UpdateView
 
 from .forms import UserRegistrationForm, ProfileForm, UserDisplayNamesForm
 from .models import User
-
+from accounts.tasks import send_welcome_notification
 
 class RegisterView(CreateView):
     model = User
@@ -19,6 +18,9 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         login(self.request, self.object)
+
+        send_welcome_notification.delay(self.object.id)
+
         messages.success(self.request, 'Welcome to Cake House DV.')
         return response
 
