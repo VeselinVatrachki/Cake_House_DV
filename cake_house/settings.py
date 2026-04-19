@@ -33,6 +33,7 @@ PROJECT_APPS = [
     'accounts',
     'core',
     'orders',
+    'rest_framework',
 ]
 # Application definition
 
