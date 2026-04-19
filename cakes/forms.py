@@ -5,6 +5,7 @@ from .models import Cake, Category
 class CakeForm(forms.ModelForm):
     class Meta:
         model = Cake
+        exclude = []
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Cake name'}),
             'description': forms.Textarea(attrs={'placeholder': 'Cake description'}),
