@@ -30,6 +30,9 @@ ALLOWED_HOSTS = []
 PROJECT_APPS = [
     'cakes',
     'review',
+    'accounts',
+    'core',
+    'orders',
 ]
 # Application definition
 
@@ -41,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ] + PROJECT_APPS
+
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
