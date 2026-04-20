@@ -71,10 +71,6 @@ class OrderDetailView(OrderDetailOwnerMixin, DetailView):
     def get_queryset(self):
         return Order.objects.select_related('user').prefetch_related('lines__cake')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
 
 class OrderDeleteView(OrderDetailOwnerMixin, FormMixin, DetailView):
     model = Order

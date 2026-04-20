@@ -13,10 +13,11 @@ class User(AbstractUser):
     )
 
     def get_public_name(self) -> str:
+        # Falls back to username so callers never receive an empty string.
         return self.display_name.strip() or self.get_username()
 
     def get_absolute_url(self):
-        return reverse('accounts:profile_detail', kwargs={'pk': self.pk})
+        return reverse('accounts:public_profile', kwargs={'pk': self.pk})
 
 
 class Profile(models.Model):

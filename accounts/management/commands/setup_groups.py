@@ -19,9 +19,11 @@ class Command(BaseCommand):
         )
         order_perms = Permission.objects.filter(
             content_type=order_ct,
+            # Order Staff can view and update statuses but cannot delete orders.
             codename__in=['change_order', 'view_order'],
         )
 
+        # get_or_create makes this safe to run multiple times without duplicating groups.
         editors, _ = Group.objects.get_or_create(name='Cake Editors')
         editors.permissions.set(cake_perms)
 

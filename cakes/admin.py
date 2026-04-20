@@ -23,5 +23,5 @@ class CakeAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'name',
-        'description'
+        'description',
     )

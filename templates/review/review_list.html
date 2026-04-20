@@ -15,7 +15,7 @@
 
 {% for r in reviews %}
 <div class="card">
-    <p><strong><a href="{% url 'accounts:profile_detail' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> on <a href="{{ r.cake.get_absolute_url }}">{{ r.cake.name }}</a></p>
+    <p><strong><a href="{% url 'accounts:public_profile' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> on <a href="{{ r.cake.get_absolute_url }}">{{ r.cake.name }}</a></p>
     <p>{{ r.rating|stars }}</p>
     <p>{{ r.comment }}</p>
 </div>

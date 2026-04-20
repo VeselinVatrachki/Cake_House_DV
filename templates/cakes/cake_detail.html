@@ -18,7 +18,7 @@
                 -
             {% endfor %}
         </p>
-        <p>Baker: <a href="{% url 'accounts:profile_detail' cake.owner.pk %}">{{ cake.owner.get_public_name }}</a></p>
+        <p>Baker: <a href="{% url 'accounts:public_profile' cake.owner.pk %}">{{ cake.owner.get_public_name }}</a></p>
         <p>Average rating: {{ avg_rating|floatformat:1 }} / 5 {{ avg_rating|stars }}</p>
         {% if user.is_authenticated %}
         <a class="btn" href="{% url 'review:add' %}?cake={{ cake.pk }}">Review this cake</a>
@@ -34,7 +34,7 @@
 <h2>Reviews</h2>
 {% for r in reviews %}
 <div class="review">
-    <p><strong><a href="{% url 'accounts:profile_detail' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> — {{ r.rating }}★ · {{ r.created_at|date:'M j, Y' }}</p>
+    <p><strong><a href="{% url 'accounts:public_profile' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> — {{ r.rating }}★ · {{ r.created_at|date:'M j, Y' }}</p>
     <p>{{ r.comment }}</p>
     {% if user == r.user or user.is_staff %}
     <p><a href="{% url 'review:edit' r.pk %}">Edit</a> · <a href="{% url 'review:delete' r.pk %}">Delete</a></p>

@@ -7,7 +7,6 @@ from django.views.generic import (
     CreateView,
     DetailView,
     ListView,
-    RedirectView,
     TemplateView,
     UpdateView,
 )
@@ -146,7 +145,3 @@ class CakeDeleteView(CakeOwnerMixin, FormMixin, DetailView):
         self.object.delete()
         return HttpResponseRedirect(self.success_url)
 
-
-class SignUpRedirectView(RedirectView):
-    permanent = False
-    pattern_name = 'accounts:register'

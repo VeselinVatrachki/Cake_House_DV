@@ -47,6 +47,7 @@ class Cake(models.Model):
         default=Decimal('25.00'),
         validators=[MinValueValidator(Decimal('0.01'))],
     )
+    # PROTECT prevents a category from being deleted while cakes still reference it.
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,

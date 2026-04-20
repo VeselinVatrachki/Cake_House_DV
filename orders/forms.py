@@ -48,20 +48,3 @@ OrderLineFormSet = inlineformset_factory(
     can_delete=False,
 )
 
-
-class OrderStatusReadOnlyForm(forms.ModelForm):
-    """Staff fields read-only for customers viewing an order."""
-
-    class Meta:
-        model = Order
-        fields = ('status', 'note', 'event_date')
-        widgets = {
-            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'disabled': 'disabled'}),
-            'note': forms.Textarea(attrs={'class': 'form-control', 'readonly': 'readonly', 'rows': 3}),
-            'event_date': forms.DateInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'disabled': 'disabled'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name in self.fields:
-            self.fields[name].disabled = True

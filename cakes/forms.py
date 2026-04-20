@@ -17,17 +17,11 @@ class CakeForm(forms.ModelForm):
             'category': 'Category',
             'tags': 'Tags',
         }
-        # help_texts = {
-        #     'slug': 'Leave blank to auto-generate from the name.',
-        #     'tags': 'Hold Ctrl/Cmd to select multiple.',
-        # }
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Velvet Dream'}),
             'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'auto-filled if empty'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
-            'category': forms.Select(attrs={'class': 'form-select'}),
-            'tags': forms.SelectMultiple(attrs={'class': 'form-select', 'size': '6'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
@@ -35,6 +29,22 @@ class CakeForm(forms.ModelForm):
         self.user = user
         super().__init__(*args, **kwargs)
         self.fields['slug'].required = False
+
+        self.fields['category'] = forms.CharField(
+            label='Category',
+            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Birthday'}),
+        )
+        if self.instance and self.instance.pk and self.instance.category_id:
+            self.fields['category'].initial = self.instance.category.name
+
+        self.fields['tags'] = forms.CharField(
+            required=False,
+            label='Tags',
+            help_text='Comma-separated. Existing tags are reused; new ones are created automatically.',
+            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. chocolate, vegan, birthday'}),
+        )
+        if self.instance and self.instance.pk:
+            self.fields['tags'].initial = ', '.join(t.name for t in self.instance.tags.all())
 
     def clean_slug(self):
         slug = self.cleaned_data.get('slug', '').strip()
@@ -44,6 +54,28 @@ class CakeForm(forms.ModelForm):
         if not slug:
             raise forms.ValidationError('Provide a slug or a name to generate one.')
         return slug
+
+    def clean_category(self):
+        name = self.cleaned_data['category'].strip()
+        slug = slugify(name)
+        if not slug:
+            raise forms.ValidationError('Enter a valid category name.')
+        cat, _ = Category.objects.get_or_create(slug=slug, defaults={'name': name})
+        return cat
+
+    def clean_tags(self):
+        tags_str = self.cleaned_data.get('tags', '').strip()
+        if not tags_str:
+            return []
+        result = []
+        for name in tags_str.split(','):
+            name = name.strip()
+            if name:
+                slug = slugify(name)
+                if slug:
+                    tag, _ = Tag.objects.get_or_create(slug=slug, defaults={'name': name})
+                    result.append(tag)
+        return result
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
@@ -57,7 +89,7 @@ class CakeForm(forms.ModelForm):
             obj.owner = self.user
         if commit:
             obj.save()
-            self.save_m2m()
+            obj.tags.set(self.cleaned_data.get('tags', []))
         return obj
 
 

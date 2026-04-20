@@ -1,7 +1,23 @@
 {% load cake_extras %}
-<footer class="site-footer">
-    <div class="container center">
-        <div class="card">
+<footer class="footer">
+    <div class="site-footer">
+        <div class="socials">
+            <h3>Socials</h3>
+
+            <a href="https://instagram.com/CakeHouse" target="_blank" class="icon instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+
+            <a href="https://facebook.com/CakeHouseBakery" target="_blank" class="icon facebook">
+                <i class="fab fa-facebook"></i>
+            </a>
+
+            <a href="mailto:hello@cakehouse.example" class="icon mail">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+
+        <div class="footer-card">
         <p>{% page_title 'Cake House DV' %} — artisan cakes &amp; orders.</p>
         <p>
             <a href="{% url 'cakes:about' %}">About</a> ·

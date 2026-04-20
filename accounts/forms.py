@@ -44,6 +44,7 @@ class UserRegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
+        # Normalise to empty string so callers can safely call .strip() without None checks.
         user.display_name = self.cleaned_data.get('display_name') or ''
         if commit:
             user.save()
@@ -51,6 +52,8 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserDisplayNameForm(forms.ModelForm):
+    """Edits only the user-facing fields on the User model (not auth fields)."""
+
     class Meta:
         model = User
         fields = ('display_name', 'email')
@@ -64,6 +67,7 @@ class UserDisplayNameForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     """Profile edit; username shown read-only."""
 
+    # Disabled so the value is never accepted from POST, only rendered for display.
     username = forms.CharField(
         disabled=True,
         required=False,

@@ -7,12 +7,15 @@ from .tasks import send_welcome_notification
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
+    # Only on first save; subsequent saves are handled by save_profile below.
     if created:
         Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
+    # hasattr guard covers the window between user.save() and create_profile()
+    # completing during the first request, as well as legacy users with no profile.
     if hasattr(instance, 'profile'):
         instance.profile.save()
 

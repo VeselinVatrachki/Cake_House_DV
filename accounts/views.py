@@ -17,16 +17,27 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        # Log the user in immediately after registration so they land on the
+        # home page as an authenticated user rather than hitting a login wall.
         login(self.request, self.object)
         messages.success(self.request, 'Welcome to Cake House DV.')
         return response
 
 
 class ProfileDashboardView(LoginRequiredMixin, TemplateView):
+    """Dashboard that edits two separate models (User + Profile) at once.
+
+    TemplateView is used instead of UpdateView/FormView because there is no
+    single model form — the page submits a UserDisplayNameForm and a ProfileForm
+    together via prefixes, and both must be valid before either is saved.
+    """
+
     template_name = 'accounts/profile_dashboard.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        # get_or_create is defensive: the signal creates the profile on
+        # registration, but older accounts may not have one yet.
         profile, _ = Profile.objects.get_or_create(user=self.request.user)
         ctx['profile_form'] = ProfileForm(
             instance=profile,
@@ -51,6 +62,7 @@ class ProfileDashboardView(LoginRequiredMixin, TemplateView):
             profile_form.save()
             messages.success(request, 'Profile updated.')
             return HttpResponseRedirect(reverse('accounts:dashboard'))
+        # Re-render with the submitted (invalid) forms so errors are shown.
         ctx = self.get_context_data()
         ctx['profile_form'] = profile_form
         ctx['user_form'] = user_form
@@ -63,6 +75,7 @@ class PublicProfileDetailView(DetailView):
     context_object_name = 'profile_user'
 
     def get_queryset(self):
+        # Prefetch favorite_tags through the profile to avoid N+1 on the public page.
         return User.objects.select_related('profile').prefetch_related('profile__favorite_tags')
 
 
@@ -75,6 +88,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('accounts:dashboard')
 
     def get_object(self, queryset=None):
+        # Always edit the currently logged-in user; ignore the URL pk.
         return self.request.user
 
     def form_valid(self, form):
