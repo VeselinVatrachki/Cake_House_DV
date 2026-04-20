@@ -25,7 +25,7 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         related_name='profile',
     )
-    bio = models.TextField(blank=True),
+    bio = models.TextField(blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
     phone = models.CharField(max_length=20, blank=True)
     favorite_tags = models.ManyToManyField(
