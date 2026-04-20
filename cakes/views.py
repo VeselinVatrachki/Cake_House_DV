@@ -120,6 +120,7 @@ class CakeUpdateView(UpdateView):
 class CakeDeleteView(DetailView):
     model = Cake
     form_class = DeleteConfirmForm
+    template_name = 'cakes/cake_confirm_delete.html'
     slug_url_kwarg = 'slug'
     success_url = reverse_lazy('cakes:gallery')
 

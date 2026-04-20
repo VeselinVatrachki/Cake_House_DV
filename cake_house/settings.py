@@ -111,7 +111,7 @@ else:
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "cake_house_db",
+#         "NAME": "postgres",
 #         "USER": "postgres",
 #         "PASSWORD": "postgres",
 #         "HOST": "127.0.0.1",
