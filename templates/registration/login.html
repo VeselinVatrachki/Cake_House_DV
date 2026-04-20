@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Login — Cake House{% endblock %}
+{% block title %}Login · Cake House DV{% endblock %}
 {% block content %}
-
 <div class="card">
     <h1 class="page-title">Login</h1>
-
-    <form method="post">
+    <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        <div class="form-row">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+        {% endfor %}
         <button type="submit" class="btn">Login</button>
+        <a href="{% url 'accounts:register' %}" class="btn">Create account</a>
     </form>
 </div>
-
 {% endblock %}

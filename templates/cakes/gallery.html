@@ -1,26 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}Gallery — Cake House{% endblock %}
+{% block title %}Gallery · Cake House DV{% endblock %}
 {% block content %}
-
-<h1 class="page-title center">Our Gallery</h1>
+<div class="card">
+    <h1 class="page-title">Gallery</h1>
+    <form method="get">
+        <div class="grid grid-3">
+            <div class="form-row">{{ filter_form.q.label_tag }}{{ filter_form.q }}</div>
+            <div class="form-row">{{ filter_form.category.label_tag }}{{ filter_form.category }}</div>
+            <div class="form-row">{{ filter_form.tag.label_tag }}{{ filter_form.tag }}</div>
+        </div>
+        <div class="form-row">{{ filter_form.sort.label_tag }}{{ filter_form.sort }}</div>
+        <button type="submit" class="btn">Apply</button>
+    </form>
+</div>
 
 <div class="grid grid-3">
     {% for cake in cakes %}
-    <div class="card">
-        {% if cake.image %}
-            <img src="{{ cake.image.url }}" alt="{{ cake.name }}" class="cake-image">
-        {% endif %}
-
-        <h3>{{ cake.name }}</h3>
-        <p>{{ cake.description|truncatewords:20 }}</p>
-
-        <a href="{% url 'cakes:cake_detail' cake.id %}" class="btn">
-            View details &amp; reviews
-        </a>
-    </div>
+        <div class="card">
+            {% if cake.image %}
+                <a href="{{ cake.get_absolute_url }}"><img src="{{ cake.image.url }}" class="cake-image" alt="{{ cake.name }}"></a>
+            {% endif %}
+            <h2><a href="{{ cake.get_absolute_url }}">{{ cake.name }}</a></h2>
+            <p>{{ cake.category.name }} · €{{ cake.price }}</p>
+        </div>
     {% empty %}
-        <p>No cakes available yet.</p>
+        <div class="card center"><p>No cakes match your filters.</p></div>
     {% endfor %}
 </div>
 
+{% if is_paginated %}
+<div class="card center">
+    {% if page_obj.has_previous %}
+        <a class="btn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

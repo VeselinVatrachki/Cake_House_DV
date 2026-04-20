@@ -13,13 +13,7 @@ class ProfileInline(admin.StackedInline):
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     fieldsets = DjangoUserAdmin.fieldsets + (('Display', {'fields': ('display_name',)}),)
-    list_display = (
-        'username',
-        'email',
-        'display_name',
-        'is_staff',
-        'is_active'
-    )
+    list_display = ('username', 'email', 'display_name', 'is_staff', 'is_active')
     inlines = [ProfileInline]
 
 

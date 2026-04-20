@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Edit account · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Edit account details</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-row">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+        {% endfor %}
+        <button type="submit" class="btn">Save</button>
+        <a href="{% url 'accounts:dashboard' %}" class="btn">Back to profile</a>
+    </form>
+</div>
+{% endblock %}

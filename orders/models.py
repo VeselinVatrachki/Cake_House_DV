@@ -1,9 +1,11 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.conf import settings
+
 from cakes.models import Cake
+
 
 class Order(models.Model):
     class Status(models.TextChoices):
@@ -23,9 +25,7 @@ class Order(models.Model):
         default=Status.PENDING,
     )
     note = models.TextField(blank=True)
-    event_date = models.DateTimeField(
-        help_text='Preferred pickup or event date.',
-    )
+    event_date = models.DateField(help_text='Preferred pickup or event date.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -59,7 +59,7 @@ class OrderLine(models.Model):
     def clean(self):
         super().clean()
         if self.quantity is not None and self.quantity < 1:
-            raise ValidationError({'qiantity': 'Quantity must be at least 1.'})
+            raise ValidationError({'quantity': 'Quantity must be at least 1.'})
 
     def line_total(self) -> Decimal:
         return self.cake.price * self.quantity

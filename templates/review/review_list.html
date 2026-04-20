@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load cake_extras %}
+{% block title %}Reviews · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">All reviews</h1>
+    <form method="get">
+        <div class="grid grid-3">
+            <div class="form-row">{{ search_form.cake.label_tag }}{{ search_form.cake }}</div>
+            <div class="form-row">{{ search_form.min_rating.label_tag }}{{ search_form.min_rating }}</div>
+        </div>
+        <button type="submit" class="btn">Filter</button>
+    </form>
+</div>
 
-</body>
-</html>
+{% for r in reviews %}
+<div class="card">
+    <p><strong><a href="{% url 'accounts:profile_detail' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> on <a href="{{ r.cake.get_absolute_url }}">{{ r.cake.name }}</a></p>
+    <p>{{ r.rating|stars }}</p>
+    <p>{{ r.comment }}</p>
+</div>
+{% empty %}
+<div class="card center"><p>No reviews yet.</p></div>
+{% endfor %}
+
+{% if is_paginated %}
+<div class="card center">
+    {% if page_obj.has_previous %}
+        <a class="btn" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+        <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

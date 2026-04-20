@@ -1,12 +1,11 @@
-from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import models
 
 from cakes.models import Cake
 
 
 class Review(models.Model):
-    RATING_CHOICES = [(i, i) for i in range(1, 6)]
-
     cake = models.ForeignKey(
         Cake,
         on_delete=models.CASCADE,
@@ -17,13 +16,21 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
     )
-    rating = models.IntegerField(choices=RATING_CHOICES)
+    rating = models.PositiveSmallIntegerField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['cake', 'user'], name='unique_review_per_user_cake'),
+        ]
 
     def __str__(self):
-        return f'{self.user.get_username()} - {self.cake.name}'
+        return f'{self.user.get_username()} — {self.cake.name}'
+
+    def clean(self):
+        super().clean()
+        if self.rating is not None and (self.rating < 1 or self.rating > 5):
+            raise ValidationError({'rating': 'Rating must be between 1 and 5.'})

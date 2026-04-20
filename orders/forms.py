@@ -2,6 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 
 from cakes.models import Cake
+
 from .models import Order, OrderLine
 
 
@@ -11,14 +12,14 @@ class OrderForm(forms.ModelForm):
         fields = ('event_date', 'note')
         labels = {
             'event_date': 'Event / pickup date',
-            'note': 'Special request',
+            'note': 'Special requests',
         }
         help_texts = {
-            'note': 'Allergies, inscriptions, delivery details, etc.',
+            'note': 'Allergies, inscription text, delivery details…',
         }
         widgets = {
             'event_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': '3', 'placeholder': 'Optional notes for the bakery'}),
+            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Optional notes for the bakery'}),
         }
 
 
@@ -26,10 +27,7 @@ class OrderLineForm(forms.ModelForm):
     class Meta:
         model = OrderLine
         fields = ('cake', 'quantity')
-        labels = {
-            'cake': 'Cake',
-            'quantity': 'Quantity',
-        }
+        # labels = {'cake': 'Cake', 'quantity': 'Qty'}
         widgets = {
             'cake': forms.Select(attrs={'class': 'form-select'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'step': 1}),
@@ -56,19 +54,14 @@ class OrderStatusReadOnlyForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ('status', 'note', 'event_date',)
+        fields = ('status', 'note', 'event_date')
         widgets = {
-            'status': forms.TextInput(attrs={'class': 'form-control','readonly': 'readonly','disabled': 'disabled'}),
-            'note': forms.Textarea(attrs={'class': 'form-control','readonly': 'readonly','rows': '3'}),
-            'event_date': forms.DateInput(attrs={'class': 'form-control','readonly': 'readonly','disabled': 'disabled'}),
+            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'disabled': 'disabled'}),
+            'note': forms.Textarea(attrs={'class': 'form-control', 'readonly': 'readonly', 'rows': 3}),
+            'event_date': forms.DateInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'disabled': 'disabled'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name in self.fields:
             self.fields[name].disabled = True
-
-
-
-
-

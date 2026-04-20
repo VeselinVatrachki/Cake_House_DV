@@ -1,0 +1,13 @@
+{% load cake_extras %}
+<footer class="site-footer">
+    <div class="container center">
+        <div class="card">
+        <p>{% page_title 'Cake House DV' %} — artisan cakes &amp; orders.</p>
+        <p>
+            <a href="{% url 'cakes:about' %}">About</a> ·
+            <a href="{% url 'review:list' %}">Reviews</a> ·
+            <a href="{% url 'cakes:gallery' %}">Gallery</a>
+        </p>
+        </div>
+    </div>
+</footer>

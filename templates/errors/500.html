@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Server error · Cake House DV{% endblock %}
+{% block content %}
+<div class="card center">
+    <h1 class="page-title">Something went wrong</h1>
+    <p>We are on it. Please try again later or return to the <a href="{% url 'cakes:home' %}">home page</a>.</p>
+</div>
+{% endblock %}

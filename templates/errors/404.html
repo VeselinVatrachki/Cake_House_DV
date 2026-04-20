@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Not found · Cake House DV{% endblock %}
+{% block content %}
+<div class="card center">
+    <h1 class="page-title">Page not found</h1>
+    <p>The page you requested does not exist. Try the <a href="{% url 'cakes:home' %}">home page</a> or <a href="{% url 'cakes:gallery' %}">gallery</a>.</p>
+</div>
+{% endblock %}

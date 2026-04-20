@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import User, Profile
+from .models import Profile, User
 from .tasks import send_welcome_notification
 
 

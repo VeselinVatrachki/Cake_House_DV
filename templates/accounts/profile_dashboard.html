@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}My profile · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">My profile</h1>
+    <p>Public profile: <a href="{% url 'accounts:public_profile' user.pk %}">view as others see it</a></p>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <h2>Account</h2>
+        {{ user_form.non_field_errors }}
+        {% for field in user_form %}
+        <div class="form-row">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+        {% endfor %}
+
+        <h2>Profile</h2>
+        {{ profile_form.non_field_errors }}
+        {% for field in profile_form %}
+        <div class="form-row">
+            {{ field.label_tag }}{{ field }}
+            {% if field.help_text %}<div class="form-help">{{ field.help_text }}</div>{% endif %}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn">Save changes</button>
+    </form>
+</div>
+{% endblock %}

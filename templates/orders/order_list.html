@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}My orders · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">My orders</h1>
+    <p><a class="btn" href="{% url 'orders:create' %}">Place new order</a></p>
+</div>
+
+<div class="grid grid-3">
+    {% for o in orders %}
+        <div class="card">
+            <h2><a href="{% url 'orders:detail' o.pk %}">Order #{{ o.pk }}</a></h2>
+            <p>Status: <span class="tag">{{ o.get_status_display }}</span></p>
+        </div>
+    {% empty %}
+        <div class="card center">
+            <p>No orders yet. <a href="{% url 'orders:create' %}">Create one</a>.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

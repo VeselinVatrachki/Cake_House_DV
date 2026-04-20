@@ -46,10 +46,10 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'cakes',
     'review',
-    'accounts',
     'core',
     'orders',
     'api',
+    'accounts.apps.AccountsConfig',
 ]
 # Application definition
 
@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + PROJECT_APPS + THIRD_PARTY_APPS
+] + THIRD_PARTY_APPS + PROJECT_APPS
 
 AUTH_USER_MODEL = 'accounts.User'
 

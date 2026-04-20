@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, TemplateView, DetailView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
 
-from .forms import UserRegistrationForm, ProfileForm, UserDisplayNamesForm
-from .models import User
-from accounts.tasks import send_welcome_notification
+from .forms import ProfileForm, UserDisplayNameForm, UserRegistrationForm
+from .models import Profile, User
+
 
 class RegisterView(CreateView):
     model = User
@@ -18,51 +18,43 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         login(self.request, self.object)
-
-        send_welcome_notification.delay(self.object.id)
-
         messages.success(self.request, 'Welcome to Cake House DV.')
         return response
 
 
-class ProfileDashBoardView(LoginRequiredMixin, TemplateView):
+class ProfileDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile_dashboard.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['profile_form'] = ProfileForm(
-            instance=self.request.user.profile,
+        ctx = super().get_context_data(**kwargs)
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        ctx['profile_form'] = ProfileForm(
+            instance=profile,
             user=self.request.user,
-            prefix='profile'
+            prefix='p',
         )
-        context['user_form'] = UserDisplayNamesForm(
-            instance=self.request.user,
-            prefix='user'
-        )
-        return context
+        ctx['user_form'] = UserDisplayNameForm(instance=self.request.user, prefix='u')
+        return ctx
 
     def post(self, request, *args, **kwargs):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
         profile_form = ProfileForm(
             request.POST,
             request.FILES,
-            instance=request.user.profile,
+            instance=profile,
             user=request.user,
-            prefix='profile'
+            prefix='p',
         )
-        user_form = UserDisplayNamesForm(
-            request.POST,
-            instance=request.user,
-            prefix='user'
-        )
+        user_form = UserDisplayNameForm(request.POST, instance=request.user, prefix='u')
         if profile_form.is_valid() and user_form.is_valid():
-            profile_form.save()
             user_form.save()
-            messages.success(request, 'Profile updated successfully!')
+            profile_form.save()
+            messages.success(request, 'Profile updated.')
             return HttpResponseRedirect(reverse('accounts:dashboard'))
-        context = self.get_context_data()
-        context['profile_form'] = profile_form
-        context['user_form'] = user_form
-        return self.render_to_response(context)
+        ctx = self.get_context_data()
+        ctx['profile_form'] = profile_form
+        ctx['user_form'] = user_form
+        return self.render_to_response(ctx)
 
 
 class PublicProfileDetailView(DetailView):
@@ -75,6 +67,8 @@ class PublicProfileDetailView(DetailView):
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
+    """Alternative single-page edit using UpdateView (dashboard uses TemplateView)."""
+
     model = User
     fields = ('display_name', 'email')
     template_name = 'accounts/profile_edit.html'
@@ -84,10 +78,5 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
-        messages.success(self.request, 'Account details saved')
+        messages.success(self.request, 'Account details saved.')
         return super().form_valid(form)
-
-
-
-
-

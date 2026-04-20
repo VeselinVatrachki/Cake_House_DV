@@ -1,14 +1,24 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Avg, Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, RedirectView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    RedirectView,
+    TemplateView,
+    UpdateView,
+)
+from django.views.generic.edit import FormMixin
 
-from cakes.forms import CakeForm, GalleryFilterForm
-from cakes.models import Cake
 from accounts.forms import DeleteConfirmForm
 from review.models import Review
+
+from .forms import CakeForm, GalleryFilterForm
+from .models import Cake
+from .mixins import CakeOwnerMixin
 
 
 class HomeView(TemplateView):
@@ -52,9 +62,9 @@ class GalleryView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter_form'] = GalleryFilterForm(self.request.GET or None)
-        return context
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = GalleryFilterForm(self.request.GET or None)
+        return ctx
 
 
 class CakeDetailView(DetailView):
@@ -67,18 +77,18 @@ class CakeDetailView(DetailView):
         return Cake.objects.select_related('category', 'owner').prefetch_related('tags')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        ctx = super().get_context_data(**kwargs)
         reviews = (
             Review.objects.filter(cake=self.object)
             .select_related('user')
             .order_by('-created_at')
         )
-        context['reviews'] = reviews
-        context['avg_rating'] = reviews.aggregate(a=Avg('rating'))['a'] or 0
-        return context
+        ctx['reviews'] = reviews
+        ctx['avg_rating'] = reviews.aggregate(a=Avg('rating'))['a'] or 0
+        return ctx
 
 
-class CakeCreateView(LoginRequiredMixin,CreateView):
+class CakeCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Cake
     form_class = CakeForm
     template_name = 'cakes/cake_form.html'
@@ -87,37 +97,37 @@ class CakeCreateView(LoginRequiredMixin,CreateView):
         return self.request.user.is_staff or self.request.user.has_perm('cakes.add_cake')
 
     def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['user'] = self.request.user
-        return form_kwargs
+        kw = super().get_form_kwargs()
+        kw['user'] = self.request.user
+        return kw
 
     def form_valid(self, form):
-        messages.success(self.request, 'Cake created successfully!')
+        messages.success(self.request, 'Cake created successfully.')
         return super().form_valid(form)
 
     def get_success_url(self):
         return self.object.get_absolute_url()
 
 
-class CakeUpdateView(UpdateView):
+class CakeUpdateView(CakeOwnerMixin, UpdateView):
     form_class = CakeForm
     template_name = 'cakes/cake_form.html'
     slug_url_kwarg = 'slug'
 
     def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['user'] = self.request.user
-        return form_kwargs
+        kw = super().get_form_kwargs()
+        kw['user'] = self.request.user
+        return kw
 
     def form_valid(self, form):
-        messages.success(self.request, 'Cake updated successfully!')
+        messages.success(self.request, 'Cake updated.')
         return super().form_valid(form)
 
     def get_success_url(self):
         return self.object.get_absolute_url()
 
 
-class CakeDeleteView(DetailView):
+class CakeDeleteView(CakeOwnerMixin, FormMixin, DetailView):
     model = Cake
     form_class = DeleteConfirmForm
     template_name = 'cakes/cake_confirm_delete.html'

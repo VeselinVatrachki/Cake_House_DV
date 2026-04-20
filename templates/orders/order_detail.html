@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.pk }} · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Order #{{ order.pk }}</h1>
+    <p>Status: <span class="tag">{{ order.get_status_display }}</span></p>
+    <p>Event date: {{ order.event_date }}</p>
+    <p>Note: {{ order.note|linebreaksbr|default:"—" }}</p>
+</div>
+
+<div class="card">
+    <h2>Lines</h2>
+    {% for line in order.lines.all %}
+        <div class="card">
+            <p><strong>Cake:</strong> <a href="{{ line.cake.get_absolute_url }}">{{ line.cake.name }}</a></p>
+            <p><strong>Qty:</strong> {{ line.quantity }}</p>
+            <p><strong>Line total:</strong> €{{ line.line_total }}</p>
+        </div>
+    {% endfor %}
+    <p><strong>Estimated total:</strong> €{{ order.total }}</p>
+    <p>
+        <a class="btn" href="{% url 'orders:list' %}">Back to orders</a>
+        {% if order.status == 'pending' %}
+            <a class="btn" href="{% url 'orders:delete' order.pk %}">Cancel order</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Cancel order · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Cancel order</h1>
+    <p>This will remove order #{{ order.pk }}.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">{{ form.confirm.label_tag }}{{ form.confirm }} {{ form.confirm.errors }}</div>
+        <button type="submit" class="btn">Confirm cancel</button>
+        <a href="{% url 'orders:detail' order.pk %}" class="btn">Back</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,39 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Home — Cake House{% endblock %}
+{% block title %}Home · Cake House DV{% endblock %}
 {% block content %}
-
 <div class="card center">
     <h1 class="page-title">Welcome to Cake House DV</h1>
-    <p>Your sweetest destination for custom bakes.</p>
+    <p>Browse our gallery, read reviews, and place orders for your next celebration.</p>
+    <a class="btn" href="{% url 'cakes:gallery' %}">View gallery</a>
+    <a class="btn" href="{% url 'cakes:about' %}">Our story</a>
 </div>
-
-<div class="grid grid-3">
-    <div class="card">
-        <h3>Opening Hours</h3>
-        <p>
-            Mon–Fri: 8am – 6pm<br>
-            Sat: 9am – 7pm<br>
-            Sun: 10am – 5pm
-        </p>
-    </div>
-
-    <div class="card">
-        <h3>Order Now</h3>
-        <p>
-            Call: 01454 555 123<br>
-            WhatsApp available<br>
-            Same-day pickup
-        </p>
-    </div>
-
-    <div class="card">
-        <h3>Custom Orders</h3>
-        <p>
-            Wedding cakes<br>
-            Birthday specials<br>
-            Corporate events
-        </p>
-    </div>
-</div>
-
 {% endblock %}

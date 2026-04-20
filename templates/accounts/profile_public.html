@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile_user.get_public_name }} · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">{{ profile_user.get_public_name }}</h1>
+    {% if profile_user.profile.avatar %}
+    <p><img src="{{ profile_user.profile.avatar.url }}" alt="" class="avatar"></p>
+    {% endif %}
+    <div class="profile-bio">{{ profile_user.profile.bio|linebreaks|default:"No bio yet." }}</div>
+    <p>
+        Favorite tags:
+        {% for t in profile_user.profile.favorite_tags.all %}
+            <span class="tag">{{ t.name }}</span>
+        {% empty %}
+            -
+        {% endfor %}
+    </p>
+
+    <h2>Cakes</h2>
+    <ul>
+        {% for c in profile_user.cakes_owned.all %}
+        <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+        {% empty %}<li>No cakes listed.</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

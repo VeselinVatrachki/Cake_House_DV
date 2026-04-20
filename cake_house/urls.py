@@ -19,11 +19,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # path('register/', RedirectView.as_view(pattern_name='accounts:register', permanent=False)),
     path('accounts/', include('accounts.urls')),
     path('reviews/', include(('review.urls', 'review'), namespace='review')),
     path('orders/', include(('orders.urls', 'orders'), namespace='orders')),

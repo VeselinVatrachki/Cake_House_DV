@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Delete cake · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Delete cake</h1>
+    <p>Are you sure you want to delete <strong>{{ object.name }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-row">{{ form.confirm.label_tag }}{{ form.confirm }} {{ form.confirm.errors }}</div>
+        <button type="submit" class="btn">Delete permanently</button>
+        <a href="{{ object.get_absolute_url }}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,9 +1,41 @@
-body {
-    background-color: #fff5f6;
+/* 1. GLOBAL RESET & BASE STYLES */
+html, body {
+    height: 100%;
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
 }
 
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    background-color: #fff5f6;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+/* 2. THE STICKY FOOTER LAYOUT */
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Forces page to be at least screen height */
+}
+
+.page-content {
+    flex: 1 0 auto; /* Pushes the footer down by filling available space */
+}
+
+.site-footer {
+    flex-shrink: 0; /* Prevents footer from collapsing */
+    width: 100%;
+    background: #ffc0cb;
+    border-top: 3px solid #ff8da1;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* 3. NAVIGATION */
 .navbar {
     background: #ffc0cb;
     padding: 15px;
@@ -24,6 +56,7 @@ body {
     text-decoration: none;
     color: #d15c70;
     margin: 0 10px;
+    font-weight: bold;
 }
 
 .navbar a:hover {
@@ -33,7 +66,6 @@ body {
 .navbar .nav-logout-form {
     display: inline;
     margin: 0;
-    vertical-align: baseline;
 }
 
 .navbar .nav-link-btn {
@@ -41,7 +73,6 @@ body {
     border: none;
     cursor: pointer;
     font: inherit;
-    text-decoration: none;
     color: #d15c70;
     margin: 0 10px;
     padding: 0;
@@ -51,10 +82,11 @@ body {
     color: white;
 }
 
+/* 4. CONTAINERS & CARDS */
 .container {
     max-width: 1000px;
     margin: 30px auto;
-    padding: 20px;
+    padding: 0 20px; /* Adjusted padding for better mobile feel */
 }
 
 .card {
@@ -69,6 +101,7 @@ body {
     text-align: center;
 }
 
+/* 5. GRID SYSTEM */
 .grid {
     display: grid;
     gap: 25px;
@@ -78,6 +111,11 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
+.span-2 {
+    grid-column: span 2;
+}
+
+/* 6. BUTTONS & FORMS */
 .btn {
     background: #ffc0cb;
     color: white;
@@ -88,24 +126,51 @@ body {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    transition: background 0.3s;
 }
 
 .btn:hover {
     background: #ff8da1;
 }
 
-.form-control {
+.form-control, .form-select {
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
     padding: 10px;
     border: 2px solid #ffc0cb;
     border-radius: 8px;
     margin-bottom: 15px;
+    background: white;
 }
 
+.form-help {
+    color: #666;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+/* 7. COMPONENTS (AVATARS, CAKES, RATINGS) */
 .page-title {
     color: #ff8da1;
+}
+
+.avatar {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid #ffc0cb;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 0 6px 6px 0;
+    border-radius: 999px;
+    border: 2px solid #ffc0cb;
+    color: #d15c70;
+    background: white;
+    font-size: 14px;
 }
 
 .cake-image {
@@ -114,10 +179,6 @@ body {
     object-fit: cover;
     border-radius: 15px;
     margin-bottom: 20px;
-}
-
-.rating-section {
-    margin-top: 20px;
 }
 
 .stars {
@@ -138,10 +199,7 @@ body {
     font-size: 14px;
 }
 
-.review {
-    margin-bottom: 15px;
-}
-
+/* 8. MAPS & MEDIA */
 .map-container {
     max-width: 720px;
     margin: 20px auto;
@@ -155,35 +213,4 @@ body {
     border: 0;
     width: 100%;
     height: 300px;
-}
-
-a {
-    font-size: 24px;
-    margin: 10px;
-    color: #333;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #ff6b6b;
-}
-
-.icon {
-    font-size: 32px;
-    margin: 10px;
-}
-
-/* Brand colors */
-.instagram {
-    background: radial-gradient(circle at 30% 30%, #feda75, #d62976, #962fbf);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.facebook {
-    color: #1877F2;
-}
-
-.mail {
-    color: #0A84FF;
 }

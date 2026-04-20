@@ -1,60 +1,47 @@
 {% extends 'base.html' %}
-{% block title %}{{ cake.name }} — Cake House{% endblock %}
+{% load cake_extras %}
+{% block title %}{{ cake.name }} · Cake House DV{% endblock %}
 {% block content %}
-
-<div class="card">
-    <h1 class="page-title">{{ cake.name }}</h1>
-
-    {% if cake.image %}
-        <img src="{{ cake.image.url }}" alt="{{ cake.name }}" class="cake-image">
-    {% endif %}
-
-    <p>{{ cake.description }}</p>
-
-    <div class="rating-section">
-        <h3>Average rating</h3>
-
-        {% if avg_rating %}
-            <div class="stars">
-                {% for i in "12345" %}
-                    {% if forloop.counter <= avg_rating|floatformat:0 %}
-                        <span class="star filled">★</span>
-                    {% else %}
-                        <span class="star">★</span>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <p class="rating-number">({{ avg_rating|floatformat:1 }} / 5)</p>
-        {% else %}
-            <p>No ratings yet.</p>
+<div class="grid grid-3">
+    <div class="card">
+        {% if cake.image %}<img src="{{ cake.image.url }}" class="cake-image" alt="{{ cake.name }}">{% endif %}
+    </div>
+    <div class="card span-2">
+        <h1 class="page-title">{{ cake.name }}</h1>
+        <p>{{ cake.category.name }} · €{{ cake.price }}</p>
+        <div>{{ cake.description|linebreaks }}</div>
+        <p>
+            Tags:
+            {% for t in cake.tags.all %}
+                <span class="tag">{{ t.name }}</span>
+            {% empty %}
+                -
+            {% endfor %}
+        </p>
+        <p>Baker: <a href="{% url 'accounts:profile_detail' cake.owner.pk %}">{{ cake.owner.get_public_name }}</a></p>
+        <p>Average rating: {{ avg_rating|floatformat:1 }} / 5 {{ avg_rating|stars }}</p>
+        {% if user.is_authenticated %}
+        <a class="btn" href="{% url 'review:add' %}?cake={{ cake.pk }}">Review this cake</a>
+        {% endif %}
+        {% if user == cake.owner or user.is_staff %}
+        <a class="btn" href="{% url 'cakes:edit' cake.slug %}">Edit</a>
+        <a class="btn" href="{% url 'cakes:delete' cake.slug %}">Delete</a>
         {% endif %}
     </div>
 </div>
 
 <div class="card">
-    <h2>Customer reviews</h2>
-
-    {% for review in reviews %}
-        <div class="review">
-            <strong>{{ review.user.username }}</strong>
-
-            <div class="stars">
-                {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}
-                        <span class="star filled">★</span>
-                    {% else %}
-                        <span class="star">★</span>
-                    {% endif %}
-                {% endfor %}
-            </div>
-
-            <p>{{ review.comment }}</p>
-            <small>{{ review.created_at|date:"M d, Y" }}</small>
-        </div>
-        <hr>
-    {% empty %}
-        <p>No reviews yet. Be the first!</p>
-    {% endfor %}
+<h2>Reviews</h2>
+{% for r in reviews %}
+<div class="review">
+    <p><strong><a href="{% url 'accounts:profile_detail' r.user.pk %}">{{ r.user.get_public_name }}</a></strong> — {{ r.rating }}★ · {{ r.created_at|date:'M j, Y' }}</p>
+    <p>{{ r.comment }}</p>
+    {% if user == r.user or user.is_staff %}
+    <p><a href="{% url 'review:edit' r.pk %}">Edit</a> · <a href="{% url 'review:delete' r.pk %}">Delete</a></p>
+    {% endif %}
 </div>
-
+{% empty %}
+<p>No reviews yet.</p>
+{% endfor %}
+</div>
 {% endblock %}

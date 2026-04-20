@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Delete review · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Delete review</h1>
+    <p>Remove your review for <strong>{{ review.cake.name }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">{{ form.confirm.label_tag }}{{ form.confirm }} {{ form.confirm.errors }}</div>
+        <button type="submit" class="btn">Delete</button>
+        <a href="{{ review.cake.get_absolute_url }}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

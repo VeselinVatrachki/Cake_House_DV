@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}New order · Cake House DV{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Place an order</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        <div class="form-row">
+            {{ field.label_tag }}{{ field }}
+            {% if field.help_text %}<div class="form-help">{{ field.help_text }}</div>{% endif %}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+
+        <h2>Items</h2>
+        {{ line_formset.management_form }}
+        {% for f in line_formset.forms %}
+        <div class="card">
+            {% for field in f %}
+            <div class="form-row">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {{ line_formset.non_form_errors }}
+        <button type="submit" class="btn">Submit order</button>
+        <a href="{% url 'orders:list' %}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

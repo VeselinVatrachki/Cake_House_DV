@@ -1,18 +1,18 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.urls import reverse
 
 
 class User(AbstractUser):
-    # is_baker = models.BooleanField(default=False)
+    """Extended user model for cake_house_DV."""
 
     display_name = models.CharField(
-        max_length=255,
+        max_length=150,
         blank=True,
-        help_text='Display name.',
+        help_text='Shown on public pages instead of username when set.',
     )
 
-    def get_public_name(self):
+    def get_public_name(self) -> str:
         return self.display_name.strip() or self.get_username()
 
     def get_absolute_url(self):
@@ -20,14 +20,16 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
+    """One-to-one profile; counted with User per course rules."""
+
     user = models.OneToOneField(
         'accounts.User',
         on_delete=models.CASCADE,
         related_name='profile',
     )
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
-    phone = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=32, blank=True)
     favorite_tags = models.ManyToManyField(
         'cakes.Tag',
         blank=True,
