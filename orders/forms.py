@@ -42,7 +42,7 @@ OrderLineFormSet = inlineformset_factory(
     Order,
     OrderLine,
     form=OrderLineForm,
-    extra=2,
+    extra=0,
     min_num=1,
     validate_min=True,
     can_delete=False,

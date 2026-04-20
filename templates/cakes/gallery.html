@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Gallery · Cake House DV{% endblock %}
 {% block content %}
-<div class="card">
+<div class="gallery-card">
     <h1 class="page-title">Gallery</h1>
     <form method="get">
-        <div class="grid grid-3">
-            <div class="form-row">{{ filter_form.q.label_tag }}{{ filter_form.q }}</div>
+        <div class="grid">
+            <div class="form-row">{{ filter_form.sort.label_tag }}{{ filter_form.sort }}</div>
             <div class="form-row">{{ filter_form.category.label_tag }}{{ filter_form.category }}</div>
             <div class="form-row">{{ filter_form.tag.label_tag }}{{ filter_form.tag }}</div>
         </div>
-        <div class="form-row">{{ filter_form.sort.label_tag }}{{ filter_form.sort }}</div>
+        <div class="form-row">{{ filter_form.q.label_tag }}{{ filter_form.q }}</div>
+        
         <button type="submit" class="btn">Apply</button>
     </form>
 </div>

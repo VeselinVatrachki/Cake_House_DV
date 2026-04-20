@@ -15,7 +15,7 @@
         {% endfor %}
 
         <h2>Items</h2>
-        {{ line_formset.management_form }}
+        <!-- {{ line_formset.management_form }}
         {% for f in line_formset.forms %}
         <div class="card">
             {% for field in f %}
@@ -23,6 +23,34 @@
             {% endfor %}
         </div>
         {% endfor %}
+        {{ line_formset.non_form_errors }} -->
+
+        {{ line_formset.management_form }}
+
+        <div id="formset-container">
+            {% for f in line_formset.forms %}
+                <div class="card formset-form">
+                    {% for field in f %}
+                        <div class="form-row">
+                            {{ field.label_tag }}{{ field }}{{ field.errors }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-item" class="btn">Add another item</button>
+
+        <!-- Hidden empty form template -->
+        <div id="empty-form" style="display:none;">
+            <div class="card formset-form">
+                {% for field in line_formset.empty_form %}
+                    <div class="form-row">
+                        {{ field.label_tag }}{{ field }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
         {{ line_formset.non_form_errors }}
         <button type="submit" class="btn">Submit order</button>
         <a href="{% url 'orders:list' %}" class="btn">Cancel</a>
