@@ -10,6 +10,12 @@ from .models import Profile, User
 
 
 class RegisterView(CreateView):
+    """
+    Handles user registration.
+
+    Creates a new User and logs them in immediately after successful signup.
+    """
+    
     model = User
     form_class = UserRegistrationForm
     template_name = 'accounts/register.html'
@@ -35,20 +41,24 @@ class ProfileDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile_dashboard.html'
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        # get_or_create is defensive: the signal creates the profile on
-        # registration, but older accounts may not have one yet.
+        context = super().get_context_data(**kwargs)
+
+        # Ensure the user always has a profile (fallback for old accounts)
         profile, _ = Profile.objects.get_or_create(user=self.request.user)
-        ctx['profile_form'] = ProfileForm(
+        context['profile_form'] = ProfileForm(
             instance=profile,
             user=self.request.user,
             prefix='p',
         )
-        ctx['user_form'] = UserDisplayNameForm(instance=self.request.user, prefix='u')
-        return ctx
+        context['user_form'] = UserDisplayNameForm(instance=self.request.user, prefix='u')
+        return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles form submission for both User and Profile forms.
+        """
         profile, _ = Profile.objects.get_or_create(user=request.user)
+        
         profile_form = ProfileForm(
             request.POST,
             request.FILES,
@@ -57,16 +67,17 @@ class ProfileDashboardView(LoginRequiredMixin, TemplateView):
             prefix='p',
         )
         user_form = UserDisplayNameForm(request.POST, instance=request.user, prefix='u')
+        # Validate both forms before saving anything
         if profile_form.is_valid() and user_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, 'Profile updated.')
             return HttpResponseRedirect(reverse('accounts:dashboard'))
         # Re-render with the submitted (invalid) forms so errors are shown.
-        ctx = self.get_context_data()
-        ctx['profile_form'] = profile_form
-        ctx['user_form'] = user_form
-        return self.render_to_response(ctx)
+        context = self.get_context_data()
+        context['profile_form'] = profile_form
+        context['user_form'] = user_form
+        return self.render_to_response(context)
 
 
 class PublicProfileDetailView(DetailView):
@@ -80,7 +91,11 @@ class PublicProfileDetailView(DetailView):
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-    """Alternative single-page edit using UpdateView (dashboard uses TemplateView)."""
+    """
+    Simpler alternative to edit user account details.
+
+    Only updates User fields (not Profile).
+    """
 
     model = User
     fields = ('display_name', 'email')
