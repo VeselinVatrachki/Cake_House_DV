@@ -65,7 +65,11 @@ class UserDisplayNameForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    """Profile edit; username shown read-only."""
+    """
+    Form for editing Profile model fields.
+
+    Includes a read-only username field for display purposes.
+    """
 
     # Disabled so the value is never accepted from POST, only rendered for display.
     username = forms.CharField(
@@ -96,10 +100,19 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, user=None, **kwargs):
+        """
+        Custom initialization:
+
+        - Injects the username into the read-only field
+        - Applies styling to favorite_tags
+        - Ensures queryset is available when editing existing profiles
+        """
         super().__init__(*args, **kwargs)
         if user:
             self.fields['username'].initial = user.get_username()
         self.fields['favorite_tags'].widget.attrs.update({'class': 'form-select'})
+        
+        # Ensure queryset is available when editing existing instance
         if self.instance and self.instance.pk:
             self.fields['favorite_tags'].queryset = Tag.objects.all()
 
