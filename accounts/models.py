@@ -8,7 +8,7 @@ class User(AbstractUser):
     Custom user model extending Django's AbstractUser.
 
     Adds an optional display_name field used for public-facing pages.
-    """"
+    """
 
     display_name = models.CharField(
         max_length=150,

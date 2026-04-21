@@ -66,7 +66,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
             formset = self.get_context_data()['line_formset']
 
         if not formset.cleaned_data:
-        form.add_error(None, "Order must contain at least one item.")
+            form.add_error(None, "Order must contain at least one item.")
         return self.form_invalid(form)
         
         self.object = form.save(commit=False)
