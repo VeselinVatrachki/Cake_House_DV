@@ -57,6 +57,9 @@ class OrderLine(models.Model):
         ordering = ['id']
 
     def clean(self):
+        """
+        Validates that quantity is at least 1.
+        """
         super().clean()
         if self.quantity is not None and self.quantity < 1:
             raise ValidationError({'quantity': 'Quantity must be at least 1.'})
