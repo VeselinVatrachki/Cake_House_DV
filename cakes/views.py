@@ -35,6 +35,14 @@ class GalleryView(ListView):
     paginate_by = 12
 
     def get_queryset(self):
+        """
+        Builds queryset with filters:
+        - search query
+        - category
+        - tag
+        - sorting options
+        """
+        
         qs = Cake.objects.select_related('category', 'owner').prefetch_related('tags')
         form = GalleryFilterForm(self.request.GET or None)
         if form.is_valid():
@@ -42,6 +50,7 @@ class GalleryView(ListView):
             cat = form.cleaned_data.get('category')
             tag = form.cleaned_data.get('tag')
             sort = form.cleaned_data.get('sort')
+            # Text search
             if q:
                 qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q))
             if cat:
@@ -61,9 +70,9 @@ class GalleryView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['filter_form'] = GalleryFilterForm(self.request.GET or None)
-        return ctx
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = GalleryFilterForm(self.request.GET or None)
+        return context
 
 
 class CakeDetailView(DetailView):
@@ -93,6 +102,8 @@ class CakeCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'cakes/cake_form.html'
 
     def test_func(self):
+        
+        #Only allow staff or users with permission to add cakes.
         return self.request.user.is_staff or self.request.user.has_perm('cakes.add_cake')
 
     def get_form_kwargs(self):
