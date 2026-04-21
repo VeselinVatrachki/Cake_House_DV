@@ -6,6 +6,15 @@ from .models import Review
 
 
 class ReviewForm(forms.ModelForm):
+    """
+    Form for creating and editing reviews.
+
+    Features:
+    - Dropdown for cake selection
+    - Rating limited to 1–5
+    - Styled inputs for better UX
+    """
+    
     class Meta:
         model = Review
         fields = ('cake', 'rating', 'comment')
@@ -29,12 +38,22 @@ class ReviewForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """
+        Custom initialization:
+
+        - Sets rating choices (1–5)
+        - Loads all cakes into dropdown
+        """
         super().__init__(*args, **kwargs)
         self.fields['rating'].choices = [(i, str(i)) for i in range(1, 6)]
         self.fields['cake'].queryset = Cake.objects.all()
 
 
 class ReviewSearchForm(forms.Form):
+    """
+    Form used to filter reviews in the list view.
+    """
+    
     cake = forms.ModelChoiceField(
         queryset=Cake.objects.none(),
         required=False,
@@ -51,5 +70,6 @@ class ReviewSearchForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        #Dynamically loads available cakes into the filter dropdown.
         super().__init__(*args, **kwargs)
         self.fields['cake'].queryset = Cake.objects.all()
