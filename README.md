@@ -17,8 +17,20 @@ A Django-based web application for managing cakes, categories, tags, and orders.
 
 ## Installation
 ```bash
-git clone <repo-url>
-cd Cake_House
+git clone https://github.com/VeselinVatrachki/Cake_House_DV
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
+
+## ⚙️ Configuration
+Create a `.env` file in the root directory and add the following:
+- `SECRET_KEY`
+- `DATABASE_URL`
+- `DEBUG`
+- `REDIS_URL`
+
+## 🛠️ Tech Stack
+* **Backend:** Django 6.0
+* **API:** Django Rest Framework
+* **Task Queue:** Celery & Redis
+* **Database:** PostgreSQL
