@@ -43,6 +43,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('review:list')
 
     def get_initial(self):
+        #Pre-fills cake field if passed via URL (?cake=ID).
         initial = super().get_initial()
         cake = self.request.GET.get('cake')
         if cake:
@@ -50,6 +51,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def form_valid(self, form):
+        #Assigns current user and handles duplicate review errors.
         form.instance.user = self.request.user
         try:
             messages.success(self.request, 'Thank you for your review.')
@@ -75,6 +77,7 @@ class ReviewUpdateView(ReviewOwnerMixin, UpdateView):
     template_name = 'review/review_form.html'
 
     def get_form(self, form_class=None):
+        #Disables editing of the cake field.
         form = super().get_form(form_class)
         form.fields['cake'].disabled = True
         return form
