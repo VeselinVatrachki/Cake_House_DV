@@ -2,6 +2,7 @@ from django.urls import path
 
 from accounts import views
 
+# Namespace for this app (used in reverse() and templates)
 app_name = 'accounts'
 
 urlpatterns = [
