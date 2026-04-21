@@ -4,7 +4,11 @@ from django.urls import reverse
 
 
 class User(AbstractUser):
-    """Extended user model for cake_house_DV."""
+    """
+    Custom user model extending Django's AbstractUser.
+
+    Adds an optional display_name field used for public-facing pages.
+    """"
 
     display_name = models.CharField(
         max_length=150,
@@ -21,7 +25,12 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
-    """One-to-one profile; counted with User per course rules."""
+    """
+    Profile model linked one-to-one with the User.
+
+    Stores additional user information that doesn't belong
+    in the core authentication model.
+    """
 
     user = models.OneToOneField(
         'accounts.User',
