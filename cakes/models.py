@@ -69,4 +69,5 @@ class Cake(models.Model):
         return self.name
 
     def get_absolute_url(self):
+        #Returns the URL to view this cake's detail page
         return reverse('cakes:detail', kwargs={'slug': self.slug})
