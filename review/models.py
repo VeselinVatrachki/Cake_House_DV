@@ -6,6 +6,12 @@ from cakes.models import Cake
 
 
 class Review(models.Model):
+    """
+    Represents a user review for a specific cake.
+
+    Each user can only review a cake once.
+    """
+    
     cake = models.ForeignKey(
         Cake,
         on_delete=models.CASCADE,
@@ -23,6 +29,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        # Prevent duplicate reviews (same user + same cake)
         constraints = [
             models.UniqueConstraint(fields=['cake', 'user'], name='unique_review_per_user_cake'),
         ]
