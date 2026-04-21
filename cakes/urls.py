@@ -1,7 +1,7 @@
 from django.urls import path
 
 from cakes import views
-
+#Namespace for reverse lookups
 app_name = 'cakes'
 
 urlpatterns = [
